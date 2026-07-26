@@ -20,12 +20,12 @@ FlowPilot is a workflow orchestration engine with a React + TypeScript + Vite fr
 
 ## Getting Started
 
-1. Clone the repo:
+### Clone the repo:
    ```bash
    git clone https://github.com/yourusername/flowpilot.git
    cd flowpilot/frontend
 
-## Install dependencies:
+### Install dependencies:
 
 1. npm install
 2. Start the dev server:
@@ -33,19 +33,19 @@ FlowPilot is a workflow orchestration engine with a React + TypeScript + Vite fr
 3. npm run dev
 4. Open http://localhost:5173 in your browser.
 
-## Demo Accounts
+### Demo Accounts
 
 To explore the application without setup, you can use the following demo logins:
 
-### Platform Admin
+#### Platform Admin
 - Email: tylergfaraon@gmail.com
 - Password: SuperSecretPassword123
 
-### Tenant Admin
+#### Tenant Admin
 - Email: sample.admin@example.com
 - Password: password123
 
-### End User
+#### End User
 - Email: tgfaraon@gmail.com
 - Password: password123
 
