@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PlatformAdmin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  // This is you (or other overseers) who can provision tenants
+}
+
+model Tenant {
+  id           String             @id @default(cuid())
+  name         String
+  domain       String?
+  createdAt    DateTime           @default(now())
+  admins       AdminUser[]
+  applications Application[]
+  users        EndUser[]
+  workflows    WorkflowTemplate[]
+  invites      Invite[]
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      String   // e.g. "owner", "manager"
+  tenantId  String?
+  createdAt DateTime @default(now())
+  tenant    Tenant?   @relation(fields: [tenantId], references: [id])
+  hashedPassword String?
+}
+
+model EndUser {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  name         String?
+  tenantId     String
+  hashedPassword String?
+  createdAt    DateTime      @default(now())
+  applications Application[]
+  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+}
+
+model Invite {
+  id        String   @id @default(cuid())
+  tenantId  String
+  email     String
+  role      String   // "admin" or "user"
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime?
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+}
+
+model WorkflowTemplate {
+  id           String             @id @default(cuid())
+  tenantId     String
+  name         String
+  version      Int                @default(1)
+  createdAt    DateTime           @default(now())
+  type         String?
+  applications Application[]
+  instances    WorkflowInstance[]
+  steps        WorkflowStep[]
+  tenant       Tenant             @relation(fields: [tenantId], references: [id])
+}
+
+model Application {
+  id            String            @id @default(cuid())
+  tenantId      String
+  workflowId    String
+  userId        String
+  status        String            @default("in_progress")
+  currentStepId String?
+  createdAt     DateTime          @default(now())
+  tenant        Tenant            @relation(fields: [tenantId], references: [id])
+  user          EndUser           @relation(fields: [userId], references: [id])
+  workflow      WorkflowTemplate  @relation(fields: [workflowId], references: [id])
+  evaluation    EvaluationResult?
+  steps         StepExecution[]
+  instance      WorkflowInstance?
+}
+
+model StepExecution {
+  id            String            @id @default(cuid())
+  applicationId String
+  stepId        String
+  instanceId    String?
+  status        String            @default("pending")
+  data          Json?
+  createdAt     DateTime          @default(now())
+  application   Application       @relation(fields: [applicationId], references: [id])
+  instance      WorkflowInstance? @relation(fields: [instanceId], references: [id])
+  logs          WorkflowExecutionLog[] @relation("StepExecutionLogs")
+}
+
+model EvaluationResult {
+  id            String      @id @default(cuid())
+  applicationId String      @unique
+  score         Int
+  flags         Json
+  status        String
+  createdAt     DateTime    @default(now())
+  application   Application @relation(fields: [applicationId], references: [id])
+}
+
+model WorkflowStep {
+  id               String             @id @default(cuid())
+  type             StepType
+  name             String
+  description      String?
+  config           Json?
+  workflowId       String
+  nextStepId       String?
+  currentInstances WorkflowInstance[]
+  nextStep         WorkflowStep?      @relation("NextStep", fields: [nextStepId], references: [id])
+  previousSteps    WorkflowStep[]     @relation("NextStep")
+  workflow         WorkflowTemplate   @relation(fields: [workflowId], references: [id])
+}
+
+model WorkflowInstance {
+  id            String           @id @default(cuid())
+  applicationId String           @unique
+  workflowId    String
+  currentStepId String?
+  status        String           @default("running")
+  createdAt     DateTime         @default(now())
+  resumeAt      DateTime?
+  manualPayload Json?
+  tenantId      String?
+  steps         StepExecution[]
+  logs          WorkflowExecutionLog[]
+  application   Application      @relation(fields: [applicationId], references: [id])
+  currentStep   WorkflowStep?    @relation(fields: [currentStepId], references: [id])
+  workflow      WorkflowTemplate @relation(fields: [workflowId], references: [id])
+}
+
+model WorkflowExecutionLog {
+  id         String   @id @default(cuid())
+  instanceId String
+  stepId     String?
+  status     String
+  message    String?
+  createdAt  DateTime @default(now())
+
+  instance   WorkflowInstance @relation(fields: [instanceId], references: [id])
+  step       StepExecution?   @relation("StepExecutionLogs", fields: [stepId], references: [id])
+}
+
+model WorkflowMetrics {
+  id        String @id @default(cuid())
+  tenantId  String
+  stepType  String
+  successes Int    @default(0)
+  failures  Int    @default(0)
+  retries   Int    @default(0)
+
+  @@unique([tenantId, stepType])
+}
+
+model Template {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  status      String   @default("active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tenantId    String
+}
+
+enum StepType {
+  TRIGGER
+  ACTION
+  CONDITION
+  BRANCH
+  LOOP
+  WAIT
+  WEBHOOK
+  MANUAL
+  SYSTEM
+  MANUAL_REVIEW
+  PARALLEL
+}
