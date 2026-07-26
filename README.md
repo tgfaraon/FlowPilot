@@ -57,7 +57,6 @@ These accounts allow you to view the different dashboards:
 - End User: view assigned workflows and their statuses
 
 ##Screenshots
-Add screenshots here once captured:
 
 <img width="491" height="911" alt="image" src="https://github.com/user-attachments/assets/a683abae-e194-4dc2-a071-4a17e16dff1e" />
 
