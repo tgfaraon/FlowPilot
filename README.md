@@ -25,7 +25,7 @@ FlowPilot is a workflow orchestration engine with a React + TypeScript + Vite fr
    git clone https://github.com/yourusername/flowpilot.git
    cd flowpilot/frontend
 
-##Install dependencies:
+## Install dependencies:
 
 bash
 npm install
@@ -56,7 +56,7 @@ These accounts allow you to view the different dashboards:
 - Tenant Admin: manage workflows within a tenant
 - End User: view assigned workflows and their statuses
 
-##Screenshots
+## Screenshots
 
 <img width="491" height="911" alt="image" src="https://github.com/user-attachments/assets/a683abae-e194-4dc2-a071-4a17e16dff1e" />
 
@@ -67,7 +67,7 @@ These accounts allow you to view the different dashboards:
 <img width="505" height="911" alt="image" src="https://github.com/user-attachments/assets/ecc92af3-48a5-4387-8da1-1ab97c34fef7" />
 
 
-##Architecture
+## Architecture
 WorkflowService: centralized API client for workflows
 
 Components: reusable UI pieces (StepCard, WorkflowTimeline, WorkflowMetrics)
@@ -76,7 +76,7 @@ Pages: TenantAdminDashboard, WorkflowMonitor, WorkflowDetail
 
 State management: local state hooks per page
 
-##Portfolio Notes
+## Portfolio Notes
 FlowPilot demonstrates:
 
 Full‑stack engineering with workflow orchestration
