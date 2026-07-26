@@ -19,13 +19,12 @@ FlowPilot is a workflow orchestration engine with a React + TypeScript + Vite fr
 - API: REST endpoints for workflows, tenants, and admin actions
 
 ## Getting Started
-
 1. Clone the repo:
    ```bash
    git clone https://github.com/yourusername/flowpilot.git
    cd flowpilot/frontend
 
-2 Install dependencies:
+2. Install dependencies:
 npm install
 
 3. Start the dev server:
