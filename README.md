@@ -27,11 +27,9 @@ FlowPilot is a workflow orchestration engine with a React + TypeScript + Vite fr
 
 ## Install dependencies:
 
-bash
 npm install
 Start the dev server:
 
-bash
 npm run dev
 Open http://localhost:5173 in your browser.
 
